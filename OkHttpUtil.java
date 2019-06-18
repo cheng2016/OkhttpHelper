@@ -29,3 +29,21 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * <p>
  * loadingBar 加载框
  */
+public class OkHttpUtil {
+    private static final String TAG = "OkHttpUtil";
+    private static LoadingBar loadingBar;
+    private static volatile boolean isSetLoading = false;
+    private static OkHttpClient client;
+
+    static {
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+        client = new OkHttpClient.Builder().writeTimeout(30 * 1000, TimeUnit.MILLISECONDS)
+                .readTimeout(20 * 1000, TimeUnit.MILLISECONDS)
+                .connectTimeout(15 * 1000, TimeUnit.MILLISECONDS)
+                //设置拦截器，显示日志信息
+                .addNetworkInterceptor(httpLoggingInterceptor)
+                .build();
+    }
+
+    private OkHttpUtil() {
+    }
