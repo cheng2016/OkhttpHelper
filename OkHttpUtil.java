@@ -70,3 +70,97 @@ public class OkHttpUtil {
                 .build();
         client.newCall(request).enqueue(responseHandler);
     }
+    
+    public abstract static class SimpleResponseHandler implements Callback {
+        private static final int START = -1;
+        private static final int FINISH = 2;
+        private Handler handler;
+
+        public SimpleResponseHandler() {
+            Looper looper = Looper.myLooper();
+            if (looper == Looper.getMainLooper()) {
+                this.handler = new ResultHandler(this, looper);
+            } else {
+                this.handler = new ResultHandler(this, Looper.getMainLooper());
+            }
+            sendTagetMessage(START);
+        }
+        
+         public void handleMessage(Message message) {
+            switch (message.what) {
+                case START:
+                    onStart();
+                    break;
+                case 0:
+                    Object[] objects = (Object[]) message.obj;
+                    onSuccess((Call) objects[0], (Response) objects[1]);
+                    sendTagetMessage(FINISH);
+                    break;
+                case 1:
+                    onFailer((Exception) message.obj);
+                    sendTagetMessage(FINISH);
+                    break;
+                case FINISH:
+                    onFinish();
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        void sendTagetMessage(int what) {
+            Message msg = handler.obtainMessage();
+            msg.what = what;
+            msg.sendToTarget();
+        }
+
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+            Log.d(TAG, "onResponse current Thread: " + Thread.currentThread().getName());
+            Message msg = handler.obtainMessage();
+            msg.what = 0;
+            msg.obj = new Object[]{call, response};
+            msg.sendToTarget();
+        }
+        
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Log.d(TAG, "onFailure current Thread: " + Thread.currentThread().getName());
+            Message msg = handler.obtainMessage();
+            msg.what = 1;
+            msg.obj = e;
+            msg.sendToTarget();
+        }
+
+        public void onStart() {
+            if (isSetLoading) {
+                loadingBar.show();
+            }
+        }
+
+        public void onFinish() {
+            if (isSetLoading) {
+                loadingBar.cancel();
+            }
+        }
+        
+        public abstract void onSuccess(Call call, Response response);
+
+        public abstract void onFailer(Exception e);
+    }
+
+    private static class ResultHandler extends Handler {
+        SimpleResponseHandler responseHandler;
+
+        ResultHandler(SimpleResponseHandler handler, Looper looper) {
+            super(looper);
+            this.responseHandler = handler;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            responseHandler.handleMessage(msg);
+        }
+    }
+}
