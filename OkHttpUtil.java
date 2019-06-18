@@ -47,3 +47,26 @@ public class OkHttpUtil {
 
     private OkHttpUtil() {
     }
+    
+    public static void post(final Context ctx, String url, String jsonStr, final Callback responseHandler) {
+        isSetLoading = true;
+        loadingBar = new LoadingBar(ctx);
+        LogUtil.d("post", "url:" + url + "\njsonStr:" + jsonStr);
+        MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(mediaType, Util.generatingSign(jsonStr).toString()))
+                .build();
+        client.newCall(request).enqueue(responseHandler);
+    }
+    
+    public static void postNoLoading(Context ctx, String url, String jsonStr, final Callback responseHandler) {
+        isSetLoading = false;
+        LogUtil.d("post", "url:" + url + "\njsonStr:" + jsonStr);
+        MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(mediaType, Util.generatingSign(jsonStr).toString()))
+                .build();
+        client.newCall(request).enqueue(responseHandler);
+    }
