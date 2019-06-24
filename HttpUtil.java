@@ -6,7 +6,9 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import cz.msebera.android.httpclient.Header;
 
-
+/**
+ * android-async-http-1.4.9 工具类
+ */
 public class HttpUtil {
     private static LoadingBar loadingBar;
     private static AsyncHttpClient client = new AsyncHttpClient();
