@@ -26,6 +26,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * 主要参考AsyncHttpClient、AsyncHttpResponseHandler类
  * <p>
  * loadingBar 加载框
+ * com.squareup.okhttp3:okhttp:3.10.0
+ * com.squareup.okio:okio:2.1.0
+ * com.squareup.okhttp3:logging-interceptor:3.9.1
  */
 public class OkHttpUtil {
     private static final String TAG = "OkHttpUtil";
