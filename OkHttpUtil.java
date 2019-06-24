@@ -48,7 +48,7 @@ public class OkHttpUtil {
     private OkHttpUtil() {
     }
     
-    public static void post(final Context ctx, String url, String jsonStr, final Callback responseHandler) {
+    public static void post(final Context ctx, String url, String jsonStr, final SimpleResponseHandler responseHandler) {
         isSetLoading = true;
         loadingBar = new LoadingBar(ctx);
         LogUtil.d("post", "url:" + url + "\njsonStr:" + jsonStr);
@@ -57,10 +57,12 @@ public class OkHttpUtil {
                 .url(url)
                 .post(RequestBody.create(mediaType, Util.generatingSign(jsonStr).toString()))
                 .build();
-        client.newCall(request).enqueue(responseHandler);
+//        client.newCall(request).enqueue(responseHandler);
+        Call call = client.newCall(request);
+        getDefaultThreadPool().execute(new ResponseRunnable(call,responseHandler));
     }
     
-    public static void postNoLoading(Context ctx, String url, String jsonStr, final Callback responseHandler) {
+    public static void postNoLoading(Context ctx, String url, String jsonStr, final SimpleResponseHandler responseHandler) {
         isSetLoading = false;
         LogUtil.d("post", "url:" + url + "\njsonStr:" + jsonStr);
         MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
@@ -68,39 +70,71 @@ public class OkHttpUtil {
                 .url(url)
                 .post(RequestBody.create(mediaType, Util.generatingSign(jsonStr).toString()))
                 .build();
-        client.newCall(request).enqueue(responseHandler);
+//        client.newCall(request).enqueue(responseHandler);
+        Call call = client.newCall(request);
+        getDefaultThreadPool().execute(new ResponseRunnable(call,responseHandler));
     }
     
+        public static void get(String url, final SimpleResponseHandler responseHandler) {
+        Request request = new Request.Builder()
+                .get()
+                .url(url)
+                .build();
+        client.newCall(request).enqueue(responseHandler);
+    }
+
+    private static ExecutorService getDefaultThreadPool() {
+        return Executors.newCachedThreadPool();
+    }
+    
+    private static class ResponseRunnable implements Runnable{
+        Call call;
+        SimpleResponseHandler callback;
+
+        public ResponseRunnable(Call call,SimpleResponseHandler callback) {
+            this.call = call;
+            this.callback = callback;
+            callback.sendStartMessage();
+        }
+
+        @Override
+        public void run() {
+            try {
+                Response response = call.execute();
+                callback.onResponse(call,response);
+            } catch (IOException e) {
+                callback.onFailure(call,e);
+            }finally {
+                callback.sendFinishMessage();
+            }
+        }
+    }
+    
+    /**
+     * 模板模式-----定义算法的步骤，并把这些实现延迟到子类
+     */
     public abstract static class SimpleResponseHandler implements Callback {
-        private static final int START = -1;
-        private static final int FINISH = 2;
         private Handler handler;
 
         public SimpleResponseHandler() {
             Looper looper = Looper.myLooper();
-            if (looper == Looper.getMainLooper()) {
-                this.handler = new ResultHandler(this, looper);
-            } else {
-                this.handler = new ResultHandler(this, Looper.getMainLooper());
-            }
-            sendTagetMessage(START);
+            this.handler = new ResultHandler(this, looper);
         }
         
-         public void handleMessage(Message message) {
+        public void handleMessage(Message message) {
+            Log.d(TAG, "SimpleResponseHandler   handleMessage current Thread: " + Thread.currentThread().getName() +", message.what() == " + message.what);
             switch (message.what) {
-                case START:
+                case -1:
                     onStart();
                     break;
                 case 0:
                     Object[] objects = (Object[]) message.obj;
                     onSuccess((Call) objects[0], (Response) objects[1]);
-                    sendTagetMessage(FINISH);
                     break;
                 case 1:
-                    onFailer((Exception) message.obj);
-                    sendTagetMessage(FINISH);
+                    onFailure((Exception) message.obj);
                     break;
-                case FINISH:
+                case 2:
                     onFinish();
                     break;
                 default:
@@ -108,10 +142,19 @@ public class OkHttpUtil {
             }
         }
         
-        void sendTagetMessage(int what) {
-            Message msg = handler.obtainMessage();
-            msg.what = what;
-            msg.sendToTarget();
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+            if (response.code() < 200 || response.code() >= 300) {
+                sendFailuerMessage(new IOException(response.message()));
+            } else {
+                sendSuccessMessage(response.code(), call, response);
+            }
+        }
+        
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Log.i(TAG, "SimpleResponseHandler   onFailure current Thread: " + Thread.currentThread().getName());
+            sendFailuerMessage(e);
         }
 
         @Override
@@ -131,15 +174,36 @@ public class OkHttpUtil {
             msg.obj = e;
             msg.sendToTarget();
         }
+        
+        void sendStartMessage() {
+            this.handler.sendMessage(obtainMessage(-1,null));
+        }
 
+        void sendSuccessMessage(int code, Call call, Response response) {
+            this.handler.sendMessage(obtainMessage(0,new Object[]{call,response}));
+        }
+
+        void sendFailuerMessage(Throwable throwable) {
+            this.handler.sendMessage(obtainMessage(1,throwable));
+        }
+
+        void sendFinishMessage() {
+            this.handler.sendMessage(obtainMessage(2,null));
+        }
+        
+        public Message obtainMessage(int responseMessageId, Object responseMessageData) {
+            return Message.obtain(this.handler, responseMessageId, responseMessageData);
+        }
         public void onStart() {
+            Log.d(TAG, "SimpleResponseHandler    onStart");
             if (isSetLoading) {
                 loadingBar.show();
             }
         }
 
         public void onFinish() {
-            if (isSetLoading) {
+            Log.d(TAG, "SimpleResponseHandler    onFinish");
+            if (isSetLoading || (loadingBar != null && loadingBar.isShowing())) {
                 loadingBar.cancel();
             }
         }
