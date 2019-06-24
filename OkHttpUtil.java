@@ -158,24 +158,6 @@ public class OkHttpUtil {
             sendFailuerMessage(e);
         }
 
-        @Override
-        public void onResponse(Call call, Response response) throws IOException {
-            Log.d(TAG, "onResponse current Thread: " + Thread.currentThread().getName());
-            Message msg = handler.obtainMessage();
-            msg.what = 0;
-            msg.obj = new Object[]{call, response};
-            msg.sendToTarget();
-        }
-        
-        @Override
-        public void onFailure(Call call, IOException e) {
-            Log.d(TAG, "onFailure current Thread: " + Thread.currentThread().getName());
-            Message msg = handler.obtainMessage();
-            msg.what = 1;
-            msg.obj = e;
-            msg.sendToTarget();
-        }
-        
         void sendStartMessage() {
             this.handler.sendMessage(obtainMessage(-1,null));
         }
