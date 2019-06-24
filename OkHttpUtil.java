@@ -56,7 +56,7 @@ public class OkHttpUtil {
         MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
         Request request = new Request.Builder()
                 .url(url)
-                .post(RequestBody.create(mediaType, Util.generatingSign(jsonStr).toString()))
+                .post(RequestBody.create(mediaType, jsonStr))
                 .build();
 //        client.newCall(request).enqueue(responseHandler);
         Call call = client.newCall(request);
@@ -69,7 +69,7 @@ public class OkHttpUtil {
         MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
         Request request = new Request.Builder()
                 .url(url)
-                .post(RequestBody.create(mediaType, Util.generatingSign(jsonStr).toString()))
+                .post(RequestBody.create(mediaType, jsonStr))
                 .build();
 //        client.newCall(request).enqueue(responseHandler);
         Call call = client.newCall(request);
