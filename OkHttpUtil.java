@@ -194,6 +194,7 @@ public class OkHttpUtil {
         public Message obtainMessage(int responseMessageId, Object responseMessageData) {
             return Message.obtain(this.handler, responseMessageId, responseMessageData);
         }
+        
         public void onStart() {
             Log.d(TAG, "SimpleResponseHandler    onStart");
             if (isSetLoading) {
