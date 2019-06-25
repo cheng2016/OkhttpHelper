@@ -76,7 +76,7 @@ public class OkHttpUtil {
         getDefaultThreadPool().execute(new ResponseRunnable(call,responseHandler));
     }
     
-        public static void get(String url, final SimpleResponseHandler responseHandler) {
+    public static void get(String url, final SimpleResponseHandler responseHandler) {
         Request request = new Request.Builder()
                 .get()
                 .url(url)
