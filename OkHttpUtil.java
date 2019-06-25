@@ -25,7 +25,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * <p>
  * 模仿Async-Http通信库写出的okhttp子线程跨主线程通信类
  * <p>
- * 主要参考AsyncHttpClient、AsyncHttpResponseHandler类
+ * 参考AsyncHttpClient、AsyncHttpResponseHandler类
+ * 参考Retofit2中OkHttpCall类、okhttp3中RealCall类
  * <p>
  * loadingBar 加载框
  * com.squareup.okhttp3:okhttp:3.10.0
