@@ -4,9 +4,11 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.icloud.sdk.view.LoadingBar;
-import com.tencent.mm.opensdk.utils.Log;
+import android.util.Log;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -52,7 +54,7 @@ public class OkHttpUtil {
     public static void post(final Context ctx, String url, String jsonStr, final SimpleResponseHandler responseHandler) {
         isSetLoading = true;
         loadingBar = new LoadingBar(ctx);
-        LogUtil.d("post", "url:" + url + "\njsonStr:" + jsonStr);
+        Log.d("post", "url:" + url + "\njsonStr:" + jsonStr);
         MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
         Request request = new Request.Builder()
                 .url(url)
@@ -65,7 +67,7 @@ public class OkHttpUtil {
     
     public static void postNoLoading(Context ctx, String url, String jsonStr, final SimpleResponseHandler responseHandler) {
         isSetLoading = false;
-        LogUtil.d("post", "url:" + url + "\njsonStr:" + jsonStr);
+        Log.d("post", "url:" + url + "\njsonStr:" + jsonStr);
         MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
         Request request = new Request.Builder()
                 .url(url)
