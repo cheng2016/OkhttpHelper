@@ -17,7 +17,9 @@ Okhttp的一个工具类，模仿Async-Http通信库写出的okhttp子线程跨�
             });
 
 
-## Android App混淆日记
+## Android Apk混淆日记
+    
+如果有依赖的Library则同样需要混淆，同样Library下面的build.gradle需要配置混淆
 
     -dontskipnonpubliclibraryclasses # 不忽略非公共的库类
     -optimizationpasses 5 # 指定代码的压缩级别
