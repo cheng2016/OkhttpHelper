@@ -148,6 +148,7 @@ public class OkHttpUtil {
         
         @Override
         public void onResponse(Call call, Response response) throws IOException {
+            Log.i(TAG, "SimpleResponseHandler   onResponse current Thread: " + Thread.currentThread().getName());
             if (response.code() < 200 || response.code() >= 300) {
                 sendFailuerMessage(new IOException(response.message()));
             } else {
