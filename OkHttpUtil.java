@@ -198,7 +198,7 @@ public class OkHttpUtil {
         
         public abstract void onSuccess(Call call, Response response);
 
-        public abstract void onFailer(Exception e);
+        public abstract void onFailure(Exception e);
     }
 
     private static class ResultHandler extends Handler {
