@@ -92,8 +92,8 @@ public class OkHttpUtil {
     }
     
     private static class ResponseRunnable implements Runnable{
-        Call call;
-        SimpleResponseHandler callback;
+        private Call call;
+        private SimpleResponseHandler callback;
 
         public ResponseRunnable(Call call,SimpleResponseHandler callback) {
             this.call = call;
