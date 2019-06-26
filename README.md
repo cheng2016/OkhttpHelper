@@ -19,7 +19,7 @@
 
 ## Android Apk混淆日记
     
-如果有依赖的Library则同样需要混淆，同样Library下面的build.gradle需要配置混淆
+如果有依赖的Library需要混淆只需在app主目录下build.gradle下配置混淆就行了
 
     -dontskipnonpubliclibraryclasses # 不忽略非公共的库类
     -optimizationpasses 5 # 指定代码的压缩级别
