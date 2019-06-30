@@ -79,9 +79,6 @@
 
     # FastJson -dontwarn com.alibaba.fastjson.**
     -keep class com.alibaba.fastjson.** { *; }
-    -keepattributes Signature
-    -keepattributes *Annotation*
-
 
     # OkHttp3 -dontwarn com.squareup.okhttp3.**
     -keep class com.squareup.okhttp3.** { *;}
