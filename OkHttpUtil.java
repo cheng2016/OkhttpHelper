@@ -84,7 +84,9 @@ public class OkHttpUtil {
                 .get()
                 .url(url)
                 .build();
-        client.newCall(request).enqueue(responseHandler);
+//         client.newCall(request).enqueue(responseHandler);
+        Call call = client.newCall(request);
+        getDefaultThreadPool().execute(new ResponseRunnable(call,responseHandler));
     }
 
     private static ExecutorService getDefaultThreadPool() {
