@@ -93,7 +93,6 @@
     -keep class com.tencent.mm.** {*;}
     -keep class com.tencent.wxop.stat.**{*;}
 
-
     # 支付宝钱包 -dontwarn com.alipay.**
     -dontwarn HttpUtils.HttpFetcher
     -dontwarn com.ta.utdid2.**
@@ -106,6 +105,13 @@
     -keep class com.alipay.sdk.app.AuthTask{ public *;}
     -keep class com.alipay.mobilesecuritysdk.*
     -keep class com.ut.*
+    
+    # Gson specific classes
+    -keep class sun.misc.Unsafe { *; }
+    -keep class com.google.gson.stream.** { *; }
+    -keep class com.google.gson.** { *;}
+    #这句非常重要，主要是滤掉 com.demo.demo.bean包下的所有.class文件不进行混淆编译,com.demo.demo是你的包名
+    -keep class com.icloud.sdk.bean.** {*;}
 
     #自定义模块
     -keep class com.yz.action.**
