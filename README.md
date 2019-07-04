@@ -19,7 +19,9 @@
 
 ## Android Apk混淆日记
     
-如果有依赖的Library需要混淆只需在app主目录下build.gradle下配置混淆就行了
+- 如果有依赖的Library需要混淆只需在app主目录下build.gradle下配置混淆就行了
+
+- 如果Library的build.gradle文件设置了混淆则断点debug模式就无效了
 
     -dontskipnonpubliclibraryclasses # 不忽略非公共的库类
     -optimizationpasses 5 # 指定代码的压缩级别
