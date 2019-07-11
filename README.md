@@ -116,7 +116,11 @@
         -keep class com.icloud.sdk.bean.** {*;}
 
         #自定义模块
-        -keep class com.yz.action.**
+        -keep class com.yz.action.**{*;}
+        -keep class com.icloud.sdk.listener.**{*;}
+        -keep class com.icloud.sdk.YZSDK{*;}
+        -keep class com.icloud.sdk.BaseYZSDK{*;}
+        -keep class com.icloud.sdk.adapter.base.Account{*;}
 
 
 ## Contact Me
