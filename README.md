@@ -23,6 +23,8 @@
 
 - 如果Library的build.gradle文件设置了混淆则断点debug模式就无效了
 
+- 依赖的Library如果打成aar包则必须将其build.gradle中的远程依赖换成本地jar包，不然打出来的aar包不包含其远程库的 compile 依赖包
+
         -dontskipnonpubliclibraryclasses # 不忽略非公共的库类
         -optimizationpasses 5 # 指定代码的压缩级别
         -dontusemixedcaseclassnames # 是否使用大小写混合
