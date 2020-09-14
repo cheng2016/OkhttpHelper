@@ -244,6 +244,7 @@ public class OkHttpUtils {
                 if (loadingBar != null)
                     loadingBar.cancel();
                 loadingBar = null;
+                context = null;
             }
         }
 
